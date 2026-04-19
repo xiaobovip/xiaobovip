@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统维护中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .logo-wrapper {
+            margin-bottom: 1rem;
+        }
+
+        .logo-wrapper img {
+            max-width: 160px;
+            max-height: 60px;
+            object-fit: contain;
+            opacity: 0.9;
+        }
+
+        .logo-placeholder {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 160px;
+            height: 60px;
+            border: 1px dashed #5a5a8a;
+            border-radius: 6px;
+            color: #8888bb;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        .container {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .icon-wrapper {
+            margin-bottom: 1.2rem;
+        }
+
+        .gear-icon {
+            width: 100px;
+            height: 100px;
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+            color: #a8a0c0;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto 1.2rem auto;
+        }
+
+        /* 倒计时 */
+        .countdown-wrapper {
+            margin: 0 auto 1.2rem auto;
+        }
+
+        .countdown-label {
+            font-size: 0.85rem;
+            color: #a8a0c0;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.05em;
+        }
+
+        .countdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .countdown-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-number {
+            width: clamp(50px, 11vw, 66px);
+            height: clamp(50px, 11vw, 66px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+            font-weight: 700;
+            color: #7c6cf0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown-unit {
+            font-size: 0.7rem;
+            color: #8888bb;
+            margin-top: 0.3rem;
+            letter-spacing: 0.05em;
+        }
+
+        .countdown-separator {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.15);
+            margin-bottom: 1rem;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .countdown-finished {
+            font-size: 1.1rem;
+            color: #7c6cf0;
+            font-weight: 600;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(124,108,240,0.3); }
+            50% { opacity: 0.7; text-shadow: 0 0 16px rgba(124,108,240,0.5); }
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem 1.2rem;
+            max-width: 400px;
+            width: 90%;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .info-card .label {
+            font-size: 0.75rem;
+            color: #8888bb;
+            margin-bottom: 0.15rem;
+            font-weight: 600;
+        }
+
+        .info-card .value {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-card .value:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-card .value span {
+            color: #7c6cf0;
+        }
+
+        /* 公告卡片 */
+        .notice-card {
+            background: rgba(124, 108, 240, 0.06);
+            border: 1px solid rgba(124, 108, 240, 0.2);
+            border-left: 4px solid #7c6cf0;
+            border-radius: 6px;
+            padding: 0.8rem 1.2rem;
+            max-width: 400px;
+            width: 90%;
+            margin: 0.8rem auto 0 auto;
+            text-align: left;
+        }
+
+        .notice-card .notice-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #7c6cf0;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .notice-card .notice-title svg {
+            width: 16px;
+            height: 16px;
+            fill: #7c6cf0;
+            flex-shrink: 0;
+        }
+
+        .notice-card .notice-content {
+            font-size: 0.85rem;
+            color: #a8a0c0;
+            line-height: 1.6;
+        }
+
+        .notice-card .notice-content .highlight {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        /* 粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(124, 108, 240, 0.25);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .gear-icon { width: 80px; height: 80px; }
+        }
+
+        @media (max-width: 480px) {
+            .gear-icon { width: 64px; height: 64px; }
+            .countdown-number { border-radius: 4px; }
+            .countdown-separator { font-size: 1.2rem; margin-bottom: 0.6rem; }
+            .info-card, .notice-card { padding: 0.7rem 0.9rem; }
+        }
+
+        @media (max-height: 800px) {
+            .logo-wrapper { margin-bottom: 0.6rem; }
+            .logo-placeholder { width: 120px; height: 44px; font-size: 0.7rem; }
+            .icon-wrapper { margin-bottom: 0.7rem; }
+            .gear-icon { width: 64px; height: 64px; }
+            h1 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+            p { margin-bottom: 0.7rem; }
+            .countdown-wrapper { margin-bottom: 0.7rem; }
+            .countdown-number { width: 50px; height: 50px; font-size: 1.2rem; }
+            .countdown-separator { font-size: 1.2rem; margin-bottom: 0.6rem; }
+            .info-card { padding: 0.7rem 0.9rem; }
+            .info-card .value { margin-bottom: 0.35rem; font-size: 0.85rem; }
+            .info-card .label { font-size: 0.7rem; }
+            .notice-card { padding: 0.7rem 0.9rem; margin-top: 0.6rem; }
+            .notice-card .notice-title { font-size: 0.8rem; }
+            .notice-card .notice-content { font-size: 0.8rem; }
+            .container { padding: 1rem; }
+        }
+
+        @media (max-height: 600px) {
+            .logo-wrapper { margin-bottom: 0.3rem; }
+            .logo-placeholder { width: 100px; height: 36px; font-size: 0.6rem; }
+            .icon-wrapper { margin-bottom: 0.4rem; }
+            .gear-icon { width: 44px; height: 44px; }
+            h1 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+            p { margin-bottom: 0.4rem; font-size: 0.8rem; }
+            .countdown-wrapper { margin-bottom: 0.4rem; }
+            .countdown-number { width: 40px; height: 40px; font-size: 1rem; border-radius: 4px; }
+            .countdown-separator { font-size: 1rem; margin-bottom: 0.5rem; }
+            .countdown-unit { font-size: 0.6rem; margin-top: 0.15rem; }
+            .info-card { padding: 0.5rem 0.7rem; }
+            .info-card .value { margin-bottom: 0.25rem; font-size: 0.78rem; }
+            .notice-card { padding: 0.5rem 0.7rem; margin-top: 0.4rem; }
+            .notice-card .notice-content { font-size: 0.75rem; line-height: 1.4; }
+            .container { padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- 企业Logo位置：替换下方 div 为 <img src="你的logo路径" alt="企业Logo"> -->
+        <div class="logo-wrapper">
+            <div class="logo-placeholder">企业 LOGO</div>
+        </div>
+
+        <div class="icon-wrapper">
+            <svg class="gear-icon" viewBox="0 0 24 24" fill="none" stroke="#7c6cf0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        </div>
+
+        <h1>系统维护中</h1>
+        <p>我们正在进行系统升级与维护，预计很快恢复。给您带来不便，敬请谅解。</p>
+
+        <div class="countdown-wrapper">
+            <div class="countdown-label">距离服务恢复还有</div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-block">
+                    <div class="countdown-number" id="cd-days">00</div>
+                    <div class="countdown-unit">天</div>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-block">
+                    <div class="countdown-number" id="cd-hours">00</div>
+                    <div class="countdown-unit">时</div>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-block">
+                    <div class="countdown-number" id="cd-minutes">00</div>
+                    <div class="countdown-unit">分</div>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-block">
+                    <div class="countdown-number" id="cd-seconds">00</div>
+                    <div class="countdown-unit">秒</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="label">维护状态</div>
+            <div class="value"><span>进行中</span> — 预计很快完成</div>
+            <div class="label">开始时间</div>
+            <div class="value">2026-04-19 00:00</div>
+            <div class="label">联系人</div>
+            <div class="value"><span>张经理</span></div>
+            <div class="label">联系电话</div>
+            <div class="value"><span>400-888-8888</span></div>
+            <div class="label">联系邮箱</div>
+            <div class="value"><span>support@example.com</span></div>
+        </div>
+
+        <div class="notice-card">
+            <div class="notice-title">
+                <svg viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707L2.138 13.131a.25.25 0 0 0 .22.369h12.284a.25.25 0 0 0 .22-.369L8.78 1.754a.25.25 0 0 0-.44 0ZM8 5a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 8 5Zm0 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>
+                恢复时间公告
+            </div>
+            <div class="notice-content">
+                系统预计于 <span class="highlight">2026年4月26日 06:00</span> 前恢复服务。<br>
+                维护期间部分功能暂不可用，届时将逐步恢复正常访问。<br>
+                感谢您的耐心等待与支持！
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 8 + 6) + 's';
+            particle.style.animationDelay = (Math.random() * 8) + 's';
+            particle.style.width = (Math.random() * 2 + 1) + 'px';
+            particle.style.height = particle.style.width;
+            particlesContainer.appendChild(particle);
+        }
+
+        // 倒计时功能 —— 修改此日期为实际恢复时间（使用本地时间构造）
+        const targetDate = new Date(2026, 3, 26, 6, 0, 0); // 2026年4月26日 06:00:00（月份从0开始，3=4月）
+        const targetTime = targetDate.getTime();
+
+        function updateCountdown() {
+            const now = Date.now();
+            const diff = targetTime - now;
+            const countdownEl = document.getElementById('countdown');
+
+            if (diff <= 0) {
+                countdownEl.innerHTML = '<div class="countdown-finished">服务即将恢复，请刷新页面</div>';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+            document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+
+            setTimeout(updateCountdown, 1000);
+        }
+
+        updateCountdown();
+
+        // 自适应缩放：内容超出视口时自动缩小
+        function autoScale() {
+            const container = document.querySelector('.container');
+            const vh = window.innerHeight;
+            const contentH = container.scrollHeight;
+            const padding = 32;
+            const available = vh - padding;
+            if (contentH > available) {
+                const scale = available / contentH;
+                container.style.transform = 'scale(' + scale + ')';
+                container.style.transformOrigin = 'center center';
+            } else {
+                container.style.transform = 'none';
+            }
+        }
+
+        window.addEventListener('resize', autoScale);
+        window.addEventListener('load', autoScale);
+        autoScale();
+    </script>
+</body>
+</html>
